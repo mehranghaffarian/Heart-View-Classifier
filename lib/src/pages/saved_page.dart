@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hvc_app/src/helper/courseModel.dart';
+import 'package:hvc_app/src/helper/dl_model_model.dart';
 import 'package:hvc_app/src/helper/quad_clipper.dart';
 import 'package:hvc_app/src/pages/home_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/theme/theme.dart';
 
-class RecommendedPage extends StatelessWidget {
-  const RecommendedPage() : super();
+class SavedPage extends StatelessWidget {
+  const SavedPage() : super();
 
   Widget _header(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -52,7 +52,7 @@ class RecommendedPage extends StatelessWidget {
                           Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "Recomended",
+                                "Saved Models",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -126,7 +126,7 @@ class RecommendedPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _courseInfo(context, CourseList.list[0],
+          _courseInfo(context, ModelsList.list[0],
               _decorationContainerA(Colors.redAccent, -110, -85),
               background: LightColor.seeBlue),
           const Divider(
@@ -134,14 +134,14 @@ class RecommendedPage extends StatelessWidget {
             endIndent: 20,
             indent: 20,
           ),
-          _courseInfo(context, CourseList.list[1], _decorationContainerB(),
+          _courseInfo(context, ModelsList.list[1], _decorationContainerB(),
               background: LightColor.darkOrange),
           const Divider(
             thickness: 1,
             endIndent: 20,
             indent: 20,
           ),
-          _courseInfo(context, CourseList.list[2], _decorationContainerC(),
+          _courseInfo(context, ModelsList.list[2], _decorationContainerC(),
               background: LightColor.lightOrange2),
         ],
       ),
@@ -168,7 +168,7 @@ class RecommendedPage extends StatelessWidget {
     );
   }
 
-  Widget _courseInfo(BuildContext context, CourseModel model, Widget decoration,
+  Widget _courseInfo(BuildContext context, DLModelModel model, Widget decoration,
       {required Color background}) {
     return SizedBox(
         height: 170,
@@ -195,14 +195,14 @@ class RecommendedPage extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                     ),
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 3,
-                      backgroundColor: background,
+                      backgroundColor: LightColor.darkseeBlue,
                     ),
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(model.noOfCource,
+                    Text(model.accuracy.toString(),
                         style: const TextStyle(
                           color: LightColor.grey,
                           fontSize: 14,
@@ -210,7 +210,7 @@ class RecommendedPage extends StatelessWidget {
                     const SizedBox(width: 10)
                   ],
                 ),
-                Text(model.university,
+                Text(model.inputSize,
                     style: AppTheme.h6Style.copyWith(
                       fontSize: 12,
                       color: LightColor.grey,
@@ -220,15 +220,15 @@ class RecommendedPage extends StatelessWidget {
                     style: AppTheme.h6Style.copyWith(
                         fontSize: 12, color: LightColor.extraDarkPurple)),
                 const SizedBox(height: 15),
-                Row(
-                  children: <Widget>[
-                    _chip(model.tag1, LightColor.darkOrange, height: 5),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    _chip(model.tag2, LightColor.seeBlue, height: 5),
-                  ],
-                )
+                // Row(
+                //   children: <Widget>[
+                //     _chip(model.tag1, LightColor.darkOrange, height: 5),
+                //     const SizedBox(
+                //       width: 10,
+                //     ),
+                //     _chip(model.tag2, LightColor.seeBlue, height: 5),
+                //   ],
+                // )
               ],
             ))
           ],
@@ -371,7 +371,7 @@ class RecommendedPage extends StatelessWidget {
         items: [
           _bottomIcons(Icons.home),
           _bottomIcons(Icons.star_border),
-          _bottomIcons(Icons.person),
+          _bottomIcons(Icons.add_box_rounded),
         ],
         onTap: (index) {
           Navigator.pushReplacement(
@@ -383,7 +383,7 @@ class RecommendedPage extends StatelessWidget {
           children: <Widget>[
             _header(context),
             const SizedBox(height: 20),
-            _categoryRow(context, "Start a new career"),
+            // _categoryRow(context, "Start a new career"),
             _courseList(context)
           ],
         ),

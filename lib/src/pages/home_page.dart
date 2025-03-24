@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/quad_clipper.dart';
-import 'package:hvc_app/src/pages/recommended_page.dart';
+import 'package:hvc_app/src/pages/saved_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 
 class HomePage extends StatelessWidget {
@@ -311,7 +311,7 @@ class HomePage extends StatelessWidget {
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: height),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(const Radius.circular(15)),
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
         color: textColor.withAlpha(isPrimaryCard ? 200 : 50),
       ),
       child: Text(
@@ -361,7 +361,7 @@ class HomePage extends StatelessWidget {
             right: -40,
             child: ClipRect(
                 clipper: QuadClipper(),
-                child: CircleAvatar(
+                child: const CircleAvatar(
                     backgroundColor: LightColor.lightseeBlue, radius: 40)))
       ],
     );
@@ -510,13 +510,13 @@ class HomePage extends StatelessWidget {
         items: [
           _bottomIcons(Icons.home),
           _bottomIcons(Icons.star_border),
-          _bottomIcons(Icons.person),
+          _bottomIcons(Icons.add_box_rounded),
         ],
         onTap: (index) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const RecommendedPage(),
+              builder: (context) => const SavedPage(),
             ),
           );
         },
