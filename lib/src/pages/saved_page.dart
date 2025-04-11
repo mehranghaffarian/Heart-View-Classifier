@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/dl_model_model.dart';
-import 'package:hvc_app/src/helper/quad_clipper.dart';
 import 'package:hvc_app/src/pages/home_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/theme/theme.dart';
+import 'package:hvc_app/src/widgets/decoration_container.dart';
 
 class SavedPage extends StatelessWidget {
   const SavedPage() : super();
@@ -26,15 +28,15 @@ class SavedPage extends StatelessWidget {
               Positioned(
                   top: 10,
                   right: -120,
-                  child: _circularContainer(300, LightColor.lightOrange2)),
+                  child: circularContainer(300, LightColor.lightOrange2)),
               Positioned(
                   top: -60,
                   left: -65,
-                  child: _circularContainer(width * .5, LightColor.darkOrange)),
+                  child: circularContainer(width * .5, LightColor.darkOrange)),
               Positioned(
                   top: -230,
                   right: -30,
-                  child: _circularContainer(width * .7, Colors.transparent,
+                  child: circularContainer(width * .7, Colors.transparent,
                       borderColor: Colors.white38)),
               Positioned(
                   top: 50,
@@ -62,19 +64,6 @@ class SavedPage extends StatelessWidget {
                       ))),
             ],
           )),
-    );
-  }
-
-  Widget _circularContainer(double height, Color color,
-      {Color borderColor = Colors.transparent, double borderWidth = 2}) {
-    return Container(
-      height: height,
-      width: height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: Border.all(color: borderColor, width: borderWidth),
-      ),
     );
   }
 
@@ -125,25 +114,46 @@ class SavedPage extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          _courseInfo(context, ModelsList.list[0],
-              _decorationContainerA(Colors.redAccent, -110, -85),
-              background: LightColor.seeBlue),
+        children: ModelsList.list.asMap().entries.expand((entry) {
+          int i = entry.key;
+          var e = entry.value;
+          return [
+            _courseInfo(context, e, decorationContainer(),
+                background: LightColor.getRandomColor()),
+            if (i != ModelsList.list.length - 1)
+              const Divider(thickness: 1, endIndent: 20, indent: 20),
+          ];
+        }).toList(),
+        /*<Widget>[
+          _courseInfo(
+            context,
+            ModelsList.list[0],
+            _decorationContainerA(Colors.redAccent, -110, -85),
+            background: LightColor.seeBlue,
+          ),
           const Divider(
             thickness: 1,
             endIndent: 20,
             indent: 20,
           ),
-          _courseInfo(context, ModelsList.list[1], _decorationContainerB(),
-              background: LightColor.darkOrange),
+          _courseInfo(
+            context,
+            ModelsList.list[1],
+            _decorationContainerB(),
+            background: LightColor.darkOrange,
+          ),
           const Divider(
             thickness: 1,
             endIndent: 20,
             indent: 20,
           ),
-          _courseInfo(context, ModelsList.list[2], _decorationContainerC(),
-              background: LightColor.lightOrange2),
-        ],
+          _courseInfo(
+            context,
+            ModelsList.list[2],
+            _decorationContainerC(),
+            background: LightColor.lightOrange2,
+          ),
+        ],*/
       ),
     );
   }
@@ -168,7 +178,8 @@ class SavedPage extends StatelessWidget {
     );
   }
 
-  Widget _courseInfo(BuildContext context, DLModelModel model, Widget decoration,
+  Widget _courseInfo(
+      BuildContext context, DLModelModel model, Widget decoration,
       {required Color background}) {
     return SizedBox(
         height: 170,
@@ -202,7 +213,7 @@ class SavedPage extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    Text(model.accuracy.toString(),
+                    Text("${model.accuracy}%",
                         style: const TextStyle(
                           color: LightColor.grey,
                           fontSize: 14,
@@ -216,7 +227,10 @@ class SavedPage extends StatelessWidget {
                       color: LightColor.grey,
                     )),
                 const SizedBox(height: 15),
-                Text(model.description,
+                Text(model.summary,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
                     style: AppTheme.h6Style.copyWith(
                         fontSize: 12, color: LightColor.extraDarkPurple)),
                 const SizedBox(height: 15),
@@ -249,93 +263,6 @@ class SavedPage extends StatelessWidget {
         style: TextStyle(
             color: isPrimaryCard ? Colors.white : textColor, fontSize: 12),
       ),
-    );
-  }
-
-  Widget _decorationContainerA(Color primaryColor, double top, double left) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: top,
-          left: left,
-          child: const CircleAvatar(
-            radius: 100,
-            backgroundColor: LightColor.darkseeBlue,
-          ),
-        ),
-        _smallContainer(LightColor.yellow, 40, 20),
-        Positioned(
-          top: -30,
-          right: -10,
-          child: _circularContainer(80, Colors.transparent,
-              borderColor: Colors.white),
-        ),
-        const Positioned(
-          top: 110,
-          right: -50,
-          child: CircleAvatar(
-            radius: 60,
-            backgroundColor: LightColor.darkseeBlue,
-            child:
-                CircleAvatar(radius: 40, backgroundColor: LightColor.seeBlue),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _decorationContainerB() {
-    return Stack(
-      children: <Widget>[
-        const Positioned(
-          top: -65,
-          left: -65,
-          child: CircleAvatar(
-            radius: 70,
-            backgroundColor: LightColor.lightOrange2,
-            child: CircleAvatar(
-                radius: 30, backgroundColor: LightColor.darkOrange),
-          ),
-        ),
-        const Positioned(
-            bottom: -35,
-            right: -40,
-            child:
-                CircleAvatar(backgroundColor: LightColor.yellow, radius: 40)),
-        Positioned(
-          top: 50,
-          left: -40,
-          child: _circularContainer(70, Colors.transparent,
-              borderColor: Colors.white),
-        ),
-      ],
-    );
-  }
-
-  Widget _decorationContainerC() {
-    return Stack(
-      children: <Widget>[
-        const Positioned(
-          bottom: -65,
-          left: -35,
-          child: CircleAvatar(
-            radius: 70,
-            backgroundColor: Color(0xfffeeaea),
-          ),
-        ),
-        Positioned(
-            bottom: -30,
-            right: -25,
-            child: ClipRect(
-                clipper: QuadClipper(),
-                child: const CircleAvatar(
-                    backgroundColor: LightColor.yellow, radius: 40))),
-        _smallContainer(
-          Colors.yellow,
-          35,
-          70,
-        ),
-      ],
     );
   }
 
@@ -374,8 +301,8 @@ class SavedPage extends StatelessWidget {
           _bottomIcons(Icons.add_box_rounded),
         ],
         onTap: (index) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomePage()));
         },
       ),
       body: SingleChildScrollView(
