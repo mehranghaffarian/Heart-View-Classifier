@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/dl_model_model.dart';
-import 'package:hvc_app/src/helper/quad_clipper.dart';
 import 'package:hvc_app/src/pages/saved_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/widgets/decoration_container.dart';
@@ -190,136 +189,11 @@ class _HomePageState extends State<HomePage> {
               primary: LightColor.getRandomColor(),
             ),
           ),
-          // _card(
-          //   context,
-          //   primary: LightColor.orange,
-          //   backWidget: _decorationContainerA(LightColor.lightOrange, 50, -30),
-          //   chipColor: LightColor.orange,
-          //   chipText1: "Find the right degree for you",
-          //   chipText2: "8 Courses",
-          //   isPrimaryCard: true,
-          //   title: 't1',
-          // ),
-          // _card(
-          //   context,
-          //   title: 't1',
-          //   primary: Colors.white,
-          //   chipColor: LightColor.seeBlue,
-          //   backWidget: _decorationContainerB(Colors.white, 90, -40),
-          //   chipText1: "Become a data scientist",
-          //   chipText2: "8 Cources",
-          // ),
-          // _card(
-          //   context,
-          //   title: 't1',
-          //   primary: Colors.white,
-          //   chipColor: LightColor.seeBlue,
-          //   backWidget: _decorationContainerB(Colors.white, 90, -40),
-          //   chipText1: "Become a data scientist",
-          //   chipText2: "8 Cources",
-          // ),
-          // _card(
-          //   context,
-          //   title: 't1',
-          //   primary: Colors.white,
-          //   chipColor: LightColor.seeBlue,
-          //   backWidget: _decorationContainerB(Colors.white, 90, -40),
-          //   chipText1: "Become a data scientist",
-          //   chipText2: "8 Cources",
-          // ),
-          // _card(
-          //   context,
-          //   title: 't1',
-          //   primary: Colors.white,
-          //   chipColor: LightColor.seeBlue,
-          //   backWidget: _decorationContainerB(Colors.white, 90, -40),
-          //   chipText1: "Become a data scientist",
-          //   chipText2: "8 Cources",
-          // ),
-          // _card(
-          //   title: 't1',
-          //   context,
-          //   primary: Colors.white,
-          //   chipColor: LightColor.lightOrange,
-          //   backWidget: _decorationContainerC(Colors.white, 50, -30),
-          //   chipText1: "Become a digital marketer",
-          //   chipText2: "8 Cources",
-          // ),
-          // _card(
-          //   context,
-          //   title: 't1',
-          //   primary: Colors.white,
-          //   chipColor: LightColor.seeBlue,
-          //   backWidget: decorationContainerD(LightColor.seeBlue),
-          //   chipText1: "Become a machine learner",
-          //   chipText2: "8 Cources",
-          // ),
         ],
       ),
     );
   }
 
-  // Widget _featuredRowB(BuildContext context) {
-  //   return SingleChildScrollView(
-  //     scrollDirection: Axis.horizontal,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       crossAxisAlignment: CrossAxisAlignment.end,
-  //       children: <Widget>[
-  //         _card(context,
-  //             primary: LightColor.seeBlue,
-  //             chipColor: LightColor.seeBlue,
-  //             backWidget: _decorationContainerD(
-  //                 LightColor.darkseeBlue, -100, -65,
-  //                 secondary: LightColor.lightseeBlue,
-  //                 secondaryAccent: LightColor.seeBlue),
-  //             chipText1: "English for career development ",
-  //             chipText2: "8 Cources",
-  //             isPrimaryCard: true,
-  //             imgPath:
-  //                 // "https://www.reiss.com/media/product/946/218/silk-paisley-printed-pocket-square-mens-morocco-in-pink-red-20.jpg?format=jpeg&auto=webp&quality=85&width=1200&height=1200&fit=bounds"),
-  //                 "https://www.visafranchise.com/wp-content/uploads/2019/05/patrick-findaro-visa-franchise-square.jpg"),
-  //         _card(context,
-  //             primary: Colors.white,
-  //             chipColor: LightColor.lightpurple,
-  //             backWidget: _decorationContainerE(
-  //               LightColor.lightpurple,
-  //               90,
-  //               -40,
-  //               secondary: LightColor.lightseeBlue,
-  //             ),
-  //             chipText1: "Bussiness foundation",
-  //             chipText2: "8 Cources",
-  //             imgPath:
-  //                 // "https://i.dailymail.co.uk/i/pix/2016/08/05/19/36E9139400000578-3725856-image-a-58_1470422921868.jpg"),
-  //                 "https://www.visafranchise.com/wp-content/uploads/2019/05/patrick-findaro-visa-franchise-square.jpg"),
-  //         _card(context,
-  //             primary: Colors.white,
-  //             chipColor: LightColor.lightOrange,
-  //             backWidget: _decorationContainerF(
-  //                 LightColor.lightOrange, LightColor.orange, 50, -30),
-  //             chipText1: "Excel skill for business",
-  //             chipText2: "8 Cources",
-  //             imgPath:
-  //                 // "https://www.reiss.com/media/product/945/066/03-2.jpg?format=jpeg&auto=webp&quality=85&width=632&height=725&fit=bounds"),
-  //                 "https://www.visafranchise.com/wp-content/uploads/2019/05/patrick-findaro-visa-franchise-square.jpg"),
-  //         _card(context,
-  //             primary: Colors.white,
-  //             chipColor: LightColor.seeBlue,
-  //             backWidget: _decorationContainerA(
-  //               Colors.white,
-  //               -50,
-  //               30,
-  //             ),
-  //             chipText1: "Beacame a data analyst",
-  //             chipText2: "8 Cources",
-  //             imgPath:
-  //                 // "https://d1mo3tzxttab3n.cloudfront.net/static/img/shop/560x580/vint0080.jpg"),
-  //                 "https://www.visafranchise.com/wp-content/uploads/2019/05/patrick-findaro-visa-franchise-square.jpg"),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _card(BuildContext context,
       {required Color primary,
       required DLModelModel dlModel,
@@ -410,34 +284,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _cardInfo(BuildContext context, String title, String courses,
-      Color textColor, Color primary,
-      {bool isPrimaryCard = false}) {
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(right: 10),
-            width: MediaQuery.of(context).size.width * .32,
-            alignment: Alignment.topCenter,
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                // color: isPrimaryCard ? Colors.white : textColor,
-              ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          _chip(courses, primary, height: 5, isPrimaryCard: isPrimaryCard)
-        ],
-      ),
-    );
-  }
-
   Widget _chip(String text, Color textColor,
       {double height = 0, bool isPrimaryCard = false}) {
     return Container(
@@ -454,78 +300,6 @@ class _HomePageState extends State<HomePage> {
           fontSize: 12,
         ),
       ),
-    );
-  }
-
-  Widget _decorationContainerA(Color primary, double top, double left) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: top,
-          left: left,
-          child: CircleAvatar(
-            radius: 100,
-            backgroundColor: primary.withAlpha(255),
-          ),
-        ),
-        smallContainer(primary, 20, 40),
-        Positioned(
-          top: 20,
-          right: -30,
-          child: _circularContainer(80, Colors.transparent,
-              borderColor: Colors.white),
-        )
-      ],
-    );
-  }
-
-  Widget _decorationContainerB(Color primary, double top, double left) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: -65,
-          right: -65,
-          child: CircleAvatar(
-            radius: 70,
-            backgroundColor: Colors.blue.shade100,
-            child: CircleAvatar(radius: 30, backgroundColor: primary),
-          ),
-        ),
-        Positioned(
-            top: 35,
-            right: -40,
-            child: ClipRect(
-                clipper: QuadClipper(),
-                child: const CircleAvatar(
-                    backgroundColor: LightColor.lightseeBlue, radius: 40)))
-      ],
-    );
-  }
-
-  Widget _decorationContainerC(Color primary, double top, double left) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: -105,
-          left: -35,
-          child: CircleAvatar(
-            radius: 70,
-            backgroundColor: LightColor.orange.withAlpha(100),
-          ),
-        ),
-        Positioned(
-            top: 35,
-            right: -40,
-            child: ClipRect(
-                clipper: QuadClipper(),
-                child: const CircleAvatar(
-                    backgroundColor: LightColor.orange, radius: 40))),
-        smallContainer(
-          LightColor.yellow,
-          35,
-          70,
-        )
-      ],
     );
   }
 

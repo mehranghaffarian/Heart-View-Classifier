@@ -6,6 +6,22 @@ class DLModelModel {
   double accuracy;
 
   DLModelModel({required this.name, required this.summary, required this.description, required this.inputSize, required this.accuracy});
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'summary': summary,
+    'description': description,
+    'inputSize': inputSize,
+    'accuracy': accuracy,
+  };
+
+  static DLModelModel fromJson(Map<String, dynamic> json) => DLModelModel(
+    name: json['name'],
+    summary: json['summary'],
+    description: json['description'],
+    inputSize: json['inputSize'],
+    accuracy: json['accuracy'].toDouble(),
+  );
 }
 
 class ModelsList {
