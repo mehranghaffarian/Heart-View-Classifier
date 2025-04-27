@@ -1,14 +1,28 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:hvc_app/src/helper/dl_model_model.dart';
+import 'package:hvc_app/src/helper/dl_model.dart';
+import 'package:hvc_app/src/helper/models_database_helper.dart';
 import 'package:hvc_app/src/pages/home_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/theme/theme.dart';
 import 'package:hvc_app/src/widgets/decoration_container.dart';
 
-class SavedPage extends StatelessWidget {
+class SavedPage extends StatefulWidget {
   const SavedPage() : super();
+
+  @override
+  State<SavedPage> createState() => _SavedPageState();
+}
+
+class _SavedPageState extends State<SavedPage> {
+  late List<DLModel> _savedModels = [];
+
+  @override
+  void initState() {
+    _fetchModels();
+    super.initState();
+  }
 
   Widget _header(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -44,8 +58,8 @@ class SavedPage extends StatelessWidget {
                   child: Container(
                       width: width,
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Stack(
-                        children: const <Widget>[
+                      child: const Stack(
+                        children: <Widget>[
                           Icon(
                             Icons.keyboard_arrow_left,
                             color: Colors.white,
@@ -67,64 +81,70 @@ class SavedPage extends StatelessWidget {
     );
   }
 
-  Widget _categoryRow(BuildContext context, String title) {
-    return SizedBox(
-      // margin: EdgeInsets.symmetric(horizontal: 20),
-      height: 68,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              title,
-              style: const TextStyle(
-                  color: LightColor.extraDarkPurple,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 30,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  const SizedBox(width: 20),
-                  _chip("Data Scientist", LightColor.yellow, height: 5),
-                  const SizedBox(width: 10),
-                  _chip("Data Analyst", LightColor.seeBlue, height: 5),
-                  const SizedBox(width: 10),
-                  _chip("Data Engineer", LightColor.orange, height: 5),
-                  const SizedBox(width: 10),
-                  _chip("Data Scientist", LightColor.lightBlue, height: 5),
-                ],
-              )),
-          const SizedBox(height: 10)
-        ],
-      ),
-    );
-  }
+  // Widget _categoryRow(BuildContext context, String title) {
+  //   return SizedBox(
+  //     // margin: EdgeInsets.symmetric(horizontal: 20),
+  //     height: 68,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: <Widget>[
+  //         Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 20),
+  //           child: Text(
+  //             title,
+  //             style: const TextStyle(
+  //                 color: LightColor.extraDarkPurple,
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //         ),
+  //         const SizedBox(
+  //           height: 10,
+  //         ),
+  //         SizedBox(
+  //             width: MediaQuery.of(context).size.width,
+  //             height: 30,
+  //             child: ListView(
+  //               scrollDirection: Axis.horizontal,
+  //               children: <Widget>[
+  //                 const SizedBox(width: 20),
+  //                 _chip("Data Scientist", LightColor.yellow, height: 5),
+  //                 const SizedBox(width: 10),
+  //                 _chip("Data Analyst", LightColor.seeBlue, height: 5),
+  //                 const SizedBox(width: 10),
+  //                 _chip("Data Engineer", LightColor.orange, height: 5),
+  //                 const SizedBox(width: 10),
+  //                 _chip("Data Scientist", LightColor.lightBlue, height: 5),
+  //               ],
+  //             )),
+  //         const SizedBox(height: 10)
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _courseList(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: ModelsList.list.asMap().entries.expand((entry) {
-          int i = entry.key;
-          var e = entry.value;
-          return [
-            _courseInfo(context, e, decorationContainer(),
-                background: LightColor.getRandomColor()),
-            if (i != ModelsList.list.length - 1)
-              const Divider(thickness: 1, endIndent: 20, indent: 20),
-          ];
-        }).toList(),
-        /*<Widget>[
+    return _savedModels.isEmpty
+        ? const Text(
+            "There is no model",
+            style: TextStyle(
+                color: LightColor.titleTextColor, fontWeight: FontWeight.bold),
+          )
+        : SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: _savedModels.asMap().entries.expand((entry) {
+                int i = entry.key;
+                var e = entry.value;
+                return [
+                  _courseInfo(context, e, decorationContainer(),
+                      background: LightColor.getRandomColor()),
+                  if (i != _savedModels.length - 1)
+                    const Divider(thickness: 1, endIndent: 20, indent: 20),
+                ];
+              }).toList(),
+              /*<Widget>[
           _courseInfo(
             context,
             ModelsList.list[0],
@@ -154,8 +174,8 @@ class SavedPage extends StatelessWidget {
             background: LightColor.lightOrange2,
           ),
         ],*/
-      ),
-    );
+            ),
+          );
   }
 
   Widget _card(BuildContext context,
@@ -178,8 +198,7 @@ class SavedPage extends StatelessWidget {
     );
   }
 
-  Widget _courseInfo(
-      BuildContext context, DLModelModel model, Widget decoration,
+  Widget _courseInfo(BuildContext context, DLModel model, Widget decoration,
       {required Color background}) {
     return SizedBox(
         height: 170,
@@ -206,19 +225,19 @@ class SavedPage extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                     ),
-                    const CircleAvatar(
-                      radius: 3,
-                      backgroundColor: LightColor.darkseeBlue,
+                    IconButton(
+                      icon: Icon(
+                        model.isSaved ? Icons.favorite : Icons.favorite_border,
+                        color: model.isSaved ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () async {
+                        model.isSaved = !model.isSaved;
+                        await ModelsDatabaseHelper.instance.update(model);
+                        setState(() {
+                          _savedModels.remove(model);
+                        });
+                      },
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text("${model.accuracy}%",
-                        style: const TextStyle(
-                          color: LightColor.grey,
-                          fontSize: 14,
-                        )),
-                    const SizedBox(width: 10)
                   ],
                 ),
                 Text(model.inputSize,
@@ -234,6 +253,24 @@ class SavedPage extends StatelessWidget {
                     style: AppTheme.h6Style.copyWith(
                         fontSize: 12, color: LightColor.extraDarkPurple)),
                 const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const CircleAvatar(
+                      radius: 3,
+                      backgroundColor: LightColor.darkseeBlue,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text("${model.accuracy}%",
+                        style: const TextStyle(
+                          color: LightColor.grey,
+                          fontSize: 14,
+                        )),
+                    const SizedBox(width: 10)
+                  ],
+                ),
                 // Row(
                 //   children: <Widget>[
                 //     _chip(model.tag1, LightColor.darkOrange, height: 5),
@@ -316,5 +353,10 @@ class SavedPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _fetchModels() async {
+    _savedModels = await ModelsDatabaseHelper.instance.querySavedModels();
+    setState(() {});
   }
 }

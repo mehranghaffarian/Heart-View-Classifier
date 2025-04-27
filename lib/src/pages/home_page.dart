@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hvc_app/src/helper/dl_model_model.dart';
+import 'package:hvc_app/src/helper/dl_model.dart';
+import 'package:hvc_app/src/helper/models_database_helper.dart';
 import 'package:hvc_app/src/pages/saved_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/widgets/decoration_container.dart';
@@ -14,18 +15,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
 
-  late List<DLModelModel> _allModels;
-  late List<DLModelModel> _filteredModels;
+  List<DLModel> _allModels = [];
+  List<DLModel> _filteredModels = [];
 
   @override
   void initState() {
-    super.initState();
-    _allModels = ModelsList.list;
-    _filteredModels = _allModels;
-
     _searchController.addListener(() {
       filterModels(_searchController.text);
     });
+    _fetchModels();
+    super.initState();
   }
 
   void filterModels(String query) {
@@ -96,9 +95,9 @@ class _HomePageState extends State<HomePage> {
                           //   size: 40,
                           // ),
                           // const SizedBox(height: 10),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const <Widget>[
+                            children: <Widget>[
                               Text(
                                 "Search models",
                                 style: TextStyle(
@@ -170,33 +169,40 @@ class _HomePageState extends State<HomePage> {
 
   Widget _featuredRowA(BuildContext context) {
     return Expanded(
-      child: GridView(
-        // scrollDirection: Axis.horizontal,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns
-          crossAxisSpacing: 10, // Space between columns
-          mainAxisSpacing: 10, // Space between rows
-          childAspectRatio: 0.8, // Width / Height ratio of each item
-        ),
-        children: <Widget>[
-          ..._filteredModels.map(
-            (e) => _card(
-              context,
-              dlModel: e,
-              backWidget: decorationContainer(),
-              chipColor: LightColor.getRandomColor(),
-              isPrimaryCard: true,
-              primary: LightColor.getRandomColor(),
+      child: _filteredModels.isEmpty
+          ? const Text(
+              "There is no model",
+              style: TextStyle(
+                  color: LightColor.titleTextColor,
+                  fontWeight: FontWeight.bold),
+            )
+          : GridView(
+              // scrollDirection: Axis.horizontal,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Number of columns
+                crossAxisSpacing: 10, // Space between columns
+                mainAxisSpacing: 10, // Space between rows
+                childAspectRatio: 0.8, // Width / Height ratio of each item
+              ),
+              children: <Widget>[
+                ..._filteredModels.map(
+                  (e) => _card(
+                    context,
+                    dlModel: e,
+                    backWidget: decorationContainer(),
+                    chipColor: LightColor.getRandomColor(),
+                    isPrimaryCard: true,
+                    primary: LightColor.getRandomColor(),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
   Widget _card(BuildContext context,
       {required Color primary,
-      required DLModelModel dlModel,
+      required DLModel dlModel,
       required Widget backWidget,
       required Color chipColor,
       bool isPrimaryCard = false}) {
@@ -228,12 +234,30 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// Title
-                  Text(
-                    dlModel.name,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        dlModel.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          dlModel.isSaved
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: dlModel.isSaved ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () async {
+                          dlModel.isSaved = !dlModel.isSaved;
+                          await ModelsDatabaseHelper.instance.update(dlModel);
+                          setState(() {}); // Update UI
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
 
@@ -346,5 +370,11 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void _fetchModels() async {
+    _allModels = await ModelsDatabaseHelper.instance.queryAllRows();
+    _filteredModels = _allModels;
+    setState(() {});
   }
 }

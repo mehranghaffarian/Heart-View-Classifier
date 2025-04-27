@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hvc_app/src/helper/dl_model_model.dart';
+import 'package:hvc_app/src/helper/dl_model.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class ModelDetailPage extends StatefulWidget {
-  final DLModelModel model;
+  final DLModel model;
 
   const ModelDetailPage({super.key, required this.model});
 
