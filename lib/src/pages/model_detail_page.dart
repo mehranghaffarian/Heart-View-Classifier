@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/dl_model.dart';
+import 'package:hvc_app/src/helper/models_database_helper.dart';
+import 'package:hvc_app/src/pages/home_page.dart';
+import 'package:hvc_app/src/pages/saved_page.dart';
+import 'package:hvc_app/src/theme/color/light_color.dart';
+import 'package:hvc_app/src/widgets/bottom_navigation_bar.dart';
+import 'package:hvc_app/src/widgets/header.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class ModelDetailPage extends StatefulWidget {
   final DLModel model;
@@ -17,16 +21,15 @@ class ModelDetailPage extends StatefulWidget {
 class _ModelDetailPageState extends State<ModelDetailPage> {
   File? _image;
   String? _predictedLabel;
-  bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    _loadFavoriteStatus();
   }
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -43,51 +46,57 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
     }
   }
 
-  Future<void> _loadFavoriteStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('saved_models') ?? [];
-    setState(() {
-      isFavorite = saved.contains(widget.model.name);
-    });
-  }
-
-  Future<void> _toggleFavorite() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('saved_models') ?? [];
-
-    if (isFavorite) {
-      saved.remove(widget.model.name);
-    } else {
-      saved.add(widget.model.name);
-      // Save full object as well
-      prefs.setString('model_${widget.model.name}', jsonEncode(widget.model.toJson()));
-    }
-
-    await prefs.setStringList('saved_models', saved);
-    setState(() => isFavorite = !isFavorite);
-  }
-
   @override
   Widget build(BuildContext context) {
     final model = widget.model;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(model.name),
-        actions: [
-          IconButton(
-            icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.red),
-            onPressed: _toggleFavorite,
-          ),
-        ],
-        backgroundColor: Colors.deepPurpleAccent,
+      bottomNavigationBar: bottomNavigationBar(
+        context,
+        LightColor.green,
+        2,
+        (index) {
+          if (index == 0) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomePage()));
+          } else {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const SavedPage()));
+          }
+        },
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Same UI as before ...
+            header(
+              context,
+              120,
+              LightColor.green,
+              LightColor.lightGreen,
+              LightColor.darkGreen,
+              Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: [Text(
+                      model.name,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  IconButton(
+                    icon: Icon(
+                      model.isSaved ? Icons.favorite : Icons.favorite_border,
+                      color: model.isSaved ? Colors.red : Colors.grey,
+                    ),
+                    onPressed: () async {
+                      model.isSaved = !model.isSaved;
+                      await ModelsDatabaseHelper.instance.update(model);
+                      setState(() {}); // Update UI
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

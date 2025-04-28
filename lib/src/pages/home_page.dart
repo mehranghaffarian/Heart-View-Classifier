@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/dl_model.dart';
 import 'package:hvc_app/src/helper/models_database_helper.dart';
+import 'package:hvc_app/src/pages/model_detail_page.dart';
 import 'package:hvc_app/src/pages/saved_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
+import 'package:hvc_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:hvc_app/src/widgets/decoration_container.dart';
+import 'package:hvc_app/src/widgets/header.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,99 +55,6 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Widget _header(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50)),
-      child: Container(
-          height: 200,
-          width: width,
-          decoration: const BoxDecoration(
-            color: LightColor.purple,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(
-                  top: 30,
-                  right: -100,
-                  child: _circularContainer(300, LightColor.lightpurple)),
-              Positioned(
-                  top: -100,
-                  left: -45,
-                  child: _circularContainer(width * .5, LightColor.darkpurple)),
-              Positioned(
-                  top: -180,
-                  right: -30,
-                  child: _circularContainer(width * .7, Colors.transparent,
-                      borderColor: Colors.white38)),
-              Positioned(
-                  top: 40,
-                  left: 0,
-                  child: Container(
-                      width: width,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // const Icon(
-                          //   Icons.keyboard_arrow_left,
-                          //   color: Colors.white,
-                          //   size: 40,
-                          // ),
-                          // const SizedBox(height: 10),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                "Search models",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Icon(
-                                Icons.search,
-                                color: Colors.white,
-                                size: 30,
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          TextField(
-                            controller: _searchController,
-                            style: const TextStyle(
-                              color: Colors.white54,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: 'Type something...',
-                              hintStyle: TextStyle(color: Colors.white54),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ],
-                      )))
-            ],
-          )),
-    );
-  }
-
-  Widget _circularContainer(double height, Color color,
-      {Color borderColor = Colors.transparent, double borderWidth = 2}) {
-    return Container(
-      height: height,
-      width: height,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: Border.all(color: borderColor, width: borderWidth),
-      ),
-    );
-  }
-
   Widget _categoryRow(
     String title,
     Color primary,
@@ -186,13 +96,16 @@ class _HomePageState extends State<HomePage> {
               ),
               children: <Widget>[
                 ..._filteredModels.map(
-                  (e) => _card(
-                    context,
-                    dlModel: e,
-                    backWidget: decorationContainer(),
-                    chipColor: LightColor.getRandomColor(),
-                    isPrimaryCard: true,
-                    primary: LightColor.getRandomColor(),
+                  (e) => InkWell(onTap: () => Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => ModelDetailPage(model: e))),
+                    child: _card(
+                      context,
+                      dlModel: e,
+                      backWidget: decorationContainer(),
+                      chipColor: LightColor.getRandomColor(),
+                      isPrimaryCard: true,
+                      primary: LightColor.getRandomColor(),
+                    ),
                   ),
                 ),
               ],
@@ -334,31 +247,45 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: LightColor.purple,
-        unselectedItemColor: Colors.grey.shade300,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        currentIndex: 0,
-        items: [
-          _bottomIcons(Icons.home),
-          _bottomIcons(Icons.star_border),
-          _bottomIcons(Icons.add_box_rounded),
-        ],
-        onTap: (index) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SavedPage(),
-            ),
-          );
-        },
-      ),
+      bottomNavigationBar: bottomNavigationBar(context, LightColor.purple, 0, (index) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const SavedPage()));
+      }),
       body: Column(
         children: <Widget>[
-          _header(context),
+          header(context, 175, LightColor.purple, LightColor.lightpurple, LightColor.darkpurple, Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Search models",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w500),
+                  ),
+                  Icon(
+                    Icons.search,
+                    color: Colors.white,
+                    size: 30,
+                  )
+                ],
+              ),
+              TextField(
+                controller: _searchController,
+                style: const TextStyle(
+                  color: Colors.white54,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  hintText: 'Type something...',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: InputBorder.none,
+                ),
+              ),
+            ],
+          ),),
           const SizedBox(height: 20),
           _categoryRow(
               "Deep Learning Models", LightColor.orange, LightColor.orange),

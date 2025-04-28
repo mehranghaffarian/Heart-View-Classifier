@@ -1,12 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:hvc_app/src/helper/dl_model.dart';
 import 'package:hvc_app/src/helper/models_database_helper.dart';
 import 'package:hvc_app/src/pages/home_page.dart';
+import 'package:hvc_app/src/pages/model_detail_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/theme/theme.dart';
+import 'package:hvc_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:hvc_app/src/widgets/decoration_container.dart';
+import 'package:hvc_app/src/widgets/header.dart';
 
 class SavedPage extends StatefulWidget {
   const SavedPage() : super();
@@ -24,106 +25,7 @@ class _SavedPageState extends State<SavedPage> {
     super.initState();
   }
 
-  Widget _header(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50)),
-      child: Container(
-          height: 120,
-          width: width,
-          decoration: const BoxDecoration(
-            color: LightColor.orange,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(
-                  top: 10,
-                  right: -120,
-                  child: circularContainer(300, LightColor.lightOrange2)),
-              Positioned(
-                  top: -60,
-                  left: -65,
-                  child: circularContainer(width * .5, LightColor.darkOrange)),
-              Positioned(
-                  top: -230,
-                  right: -30,
-                  child: circularContainer(width * .7, Colors.transparent,
-                      borderColor: Colors.white38)),
-              Positioned(
-                  top: 50,
-                  left: 0,
-                  child: Container(
-                      width: width,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: const Stack(
-                        children: <Widget>[
-                          Icon(
-                            Icons.keyboard_arrow_left,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Saved Models",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500),
-                              ))
-                        ],
-                      ))),
-            ],
-          )),
-    );
-  }
-
-  // Widget _categoryRow(BuildContext context, String title) {
-  //   return SizedBox(
-  //     // margin: EdgeInsets.symmetric(horizontal: 20),
-  //     height: 68,
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: <Widget>[
-  //         Padding(
-  //           padding: const EdgeInsets.symmetric(horizontal: 20),
-  //           child: Text(
-  //             title,
-  //             style: const TextStyle(
-  //                 color: LightColor.extraDarkPurple,
-  //                 fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         const SizedBox(
-  //           height: 10,
-  //         ),
-  //         SizedBox(
-  //             width: MediaQuery.of(context).size.width,
-  //             height: 30,
-  //             child: ListView(
-  //               scrollDirection: Axis.horizontal,
-  //               children: <Widget>[
-  //                 const SizedBox(width: 20),
-  //                 _chip("Data Scientist", LightColor.yellow, height: 5),
-  //                 const SizedBox(width: 10),
-  //                 _chip("Data Analyst", LightColor.seeBlue, height: 5),
-  //                 const SizedBox(width: 10),
-  //                 _chip("Data Engineer", LightColor.orange, height: 5),
-  //                 const SizedBox(width: 10),
-  //                 _chip("Data Scientist", LightColor.lightBlue, height: 5),
-  //               ],
-  //             )),
-  //         const SizedBox(height: 10)
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  Widget _courseList(BuildContext context) {
+  Widget _modelList(BuildContext context) {
     return _savedModels.isEmpty
         ? const Text(
             "There is no model",
@@ -138,42 +40,18 @@ class _SavedPageState extends State<SavedPage> {
                 int i = entry.key;
                 var e = entry.value;
                 return [
-                  _courseInfo(context, e, decorationContainer(),
-                      background: LightColor.getRandomColor()),
+                  InkWell(
+                    onTap: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ModelDetailPage(model: e))),
+                    child: _modelCard(context, e, decorationContainer(),
+                        background: LightColor.getRandomColor()),
+                  ),
                   if (i != _savedModels.length - 1)
                     const Divider(thickness: 1, endIndent: 20, indent: 20),
                 ];
               }).toList(),
-              /*<Widget>[
-          _courseInfo(
-            context,
-            ModelsList.list[0],
-            _decorationContainerA(Colors.redAccent, -110, -85),
-            background: LightColor.seeBlue,
-          ),
-          const Divider(
-            thickness: 1,
-            endIndent: 20,
-            indent: 20,
-          ),
-          _courseInfo(
-            context,
-            ModelsList.list[1],
-            _decorationContainerB(),
-            background: LightColor.darkOrange,
-          ),
-          const Divider(
-            thickness: 1,
-            endIndent: 20,
-            indent: 20,
-          ),
-          _courseInfo(
-            context,
-            ModelsList.list[2],
-            _decorationContainerC(),
-            background: LightColor.lightOrange2,
-          ),
-        ],*/
             ),
           );
   }
@@ -198,7 +76,7 @@ class _SavedPageState extends State<SavedPage> {
     );
   }
 
-  Widget _courseInfo(BuildContext context, DLModel model, Widget decoration,
+  Widget _modelCard(BuildContext context, DLModel model, Widget decoration,
       {required Color background}) {
     return SizedBox(
         height: 170,
@@ -286,58 +164,13 @@ class _SavedPageState extends State<SavedPage> {
         ));
   }
 
-  Widget _chip(String text, Color textColor,
-      {double height = 0, bool isPrimaryCard = false}) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: height),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: textColor.withAlpha(isPrimaryCard ? 200 : 50),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-            color: isPrimaryCard ? Colors.white : textColor, fontSize: 12),
-      ),
-    );
-  }
-
-  Positioned _smallContainer(Color primaryColor, double top, double left,
-      {double radius = 10}) {
-    return Positioned(
-        top: top,
-        left: left,
-        child: CircleAvatar(
-          radius: radius,
-          backgroundColor: primaryColor.withAlpha(255),
-        ));
-  }
-
-  BottomNavigationBarItem _bottomIcons(IconData icon) {
-    return BottomNavigationBarItem(
-        //  backgroundColor: Colors.blue,
-        icon: Icon(icon),
-        label: '');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: LightColor.background,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: LightColor.purple,
-        unselectedItemColor: Colors.grey.shade300,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 1,
-        items: [
-          _bottomIcons(Icons.home),
-          _bottomIcons(Icons.star_border),
-          _bottomIcons(Icons.add_box_rounded),
-        ],
-        onTap: (index) {
+      bottomNavigationBar: bottomNavigationBar(
+        context,
+        LightColor.orange, 1,
+        (index) {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const HomePage()));
         },
@@ -345,10 +178,29 @@ class _SavedPageState extends State<SavedPage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            _header(context),
+            header(
+              context,
+              120,
+              LightColor.orange,
+              LightColor.lightOrange2,
+              LightColor.darkOrange,
+              const Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Saved Models",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
-            // _categoryRow(context, "Start a new career"),
-            _courseList(context)
+            _modelList(context)
           ],
         ),
       ),

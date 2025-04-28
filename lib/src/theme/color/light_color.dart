@@ -37,6 +37,11 @@ class LightColor {
   static const Color darkBlue = Color(0xff13165A);
   static const Color lightBlue = Color(0xff203387);
 
+  static const Color green = Color(0xff5abf90);
+  static const Color darkGreen = Color(0xff4aa07a);
+  static const Color lightGreen = Color(0xff7cd8ac);
+  static const Color extraDarkGreen = Color(0xff3a7a5d);
+
   static const List<Color> colors = [background,
     titleTextColor,
     subTitleTextColor,
