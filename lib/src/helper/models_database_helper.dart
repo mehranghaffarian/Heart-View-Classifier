@@ -42,7 +42,6 @@ class ModelsDatabaseHelper {
       final res = await db.insert(table, model.toJson());
       return res;
     } catch (_) {
-      print(_);
       return 0;
     }
   }

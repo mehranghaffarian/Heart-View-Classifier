@@ -38,7 +38,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
       });
 
       // Simulate classification
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           _predictedLabel = "Apical 4-chamber view"; // Simulated result
         });
@@ -74,14 +74,17 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
               LightColor.green,
               LightColor.lightGreen,
               LightColor.darkGreen,
-              Row(mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(
-                      model.name,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    model.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500,
                     ),
+                  ),
                   IconButton(
                     icon: Icon(
                       model.isSaved ? Icons.favorite : Icons.favorite_border,
@@ -97,6 +100,44 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
               ),
             ),
             const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    model.description,
+                    softWrap: true,
+                    textAlign: TextAlign.justify,
+                    overflow: TextOverflow.visible,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Divider(thickness: 1, endIndent: 16, indent: 16),
+                  const SizedBox(height: 15),
+                  _image != null
+                      ? Image.file(_image!,
+                          width: 200, height: 200, fit: BoxFit.cover)
+                      : const Text('No image selected'),
+                  const SizedBox(height: 20),
+                  _image == null
+                      ? ElevatedButton(
+                          onPressed: _pickImage,
+                          child: const Text(
+                            'Pick Image',
+                            style: TextStyle(color: LightColor.green),
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: (){},
+                          child: const Text(
+                            'Classify Image',
+                            style: TextStyle(color: LightColor.darkGreen),
+                          ),
+                        ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

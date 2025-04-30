@@ -96,8 +96,11 @@ class _HomePageState extends State<HomePage> {
               ),
               children: <Widget>[
                 ..._filteredModels.map(
-                  (e) => InkWell(onTap: () => Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => ModelDetailPage(model: e))),
+                  (e) => InkWell(
+                    onTap: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ModelDetailPage(model: e),),),
                     child: _card(
                       context,
                       dlModel: e,
@@ -247,53 +250,57 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: bottomNavigationBar(context, LightColor.purple, 0, (index) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const SavedPage()));
+      bottomNavigationBar:
+          bottomNavigationBar(context, LightColor.purple, 0, (index) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const SavedPage()));
       }),
       body: Column(
         children: <Widget>[
-          header(context, 175, LightColor.purple, LightColor.lightpurple, LightColor.darkpurple, Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Search models",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w500),
+          header(
+            context,
+            175,
+            LightColor.purple,
+            LightColor.lightpurple,
+            LightColor.darkpurple,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      "Search models",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                    Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 30,
+                    )
+                  ],
+                ),
+                TextField(
+                  controller: _searchController,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
                   ),
-                  Icon(
-                    Icons.search,
-                    color: Colors.white,
-                    size: 30,
-                  )
-                ],
-              ),
-              TextField(
-                controller: _searchController,
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w500,
+                  decoration: const InputDecoration(
+                    hintText: 'Type something...',
+                    hintStyle: TextStyle(color: Colors.white54),
+                    border: InputBorder.none,
+                  ),
                 ),
-                decoration: const InputDecoration(
-                  hintText: 'Type something...',
-                  hintStyle: TextStyle(color: Colors.white54),
-                  border: InputBorder.none,
-                ),
-              ),
-            ],
-          ),),
+              ],
+            ),
+          ),
           const SizedBox(height: 20),
           _categoryRow(
               "Deep Learning Models", LightColor.orange, LightColor.orange),
           _featuredRowA(context),
-          // const SizedBox(height: 0),
-          // _categoryRow(
-          //     "Recently Used Models", LightColor.purple, LightColor.darkpurple),
-          // _featuredRowB(context)
         ],
       ),
     );
