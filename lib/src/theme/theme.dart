@@ -3,26 +3,31 @@ import 'color/light_color.dart';
 
 class AppTheme {
   const AppTheme();
+
   static ThemeData lightTheme = ThemeData.light().copyWith(
     // primarySwatch: Colors.blue,
     scaffoldBackgroundColor: LightColor.background,
     primaryColor: LightColor.purple,
     primaryColorDark: LightColor.Darker,
     primaryColorLight: LightColor.brighter,
-    cardTheme: CardTheme(color: LightColor.background),
+    cardTheme: const CardThemeData(color: LightColor.background),
     // textTheme: TextTheme(display1: TextStyle(color: LightColor.black)),
-    iconTheme: IconThemeData(color: LightColor.lightblack),
-    dividerColor: LightColor.lightGrey, colorScheme: ColorScheme(
-        primary: LightColor.purple,
-        secondary: LightColor.lightBlue,
-        surface: LightColor.background,
-        error: Colors.red,
-        onPrimary: LightColor.Darker,
-        onSecondary: LightColor.background,
-        onSurface: LightColor.Darker,
-        onBackground: LightColor.titleTextColor,
-        onError: LightColor.titleTextColor,
-        brightness: Brightness.dark).copyWith(background: LightColor.background), bottomAppBarTheme: BottomAppBarTheme(color: LightColor.background),
+    iconTheme: const IconThemeData(color: LightColor.lightblack),
+    dividerColor: LightColor.lightGrey,
+    colorScheme: const ColorScheme(
+            primary: LightColor.purple,
+            secondary: LightColor.lightBlue,
+            surface: LightColor.background,
+            error: Colors.red,
+            onPrimary: LightColor.Darker,
+            onSecondary: LightColor.background,
+            onSurface: LightColor.Darker,
+            onBackground: LightColor.titleTextColor,
+            onError: LightColor.titleTextColor,
+            brightness: Brightness.dark,
+            background: LightColor.background)
+        .copyWith(background: LightColor.background),
+    bottomAppBarTheme: const BottomAppBarThemeData(color: LightColor.background),
   );
 
   static TextStyle titleStyle =
