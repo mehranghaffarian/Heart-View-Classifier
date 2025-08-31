@@ -79,7 +79,7 @@ class _SavedPageState extends State<SavedPage> {
   Widget _modelCard(BuildContext context, DLModel model, Widget decoration,
       {required Color background}) {
     return SizedBox(
-        height: 170,
+        height: 180,
         width: MediaQuery.of(context).size.width - 20,
         child: Row(
           children: <Widget>[
@@ -184,7 +184,7 @@ class _SavedPageState extends State<SavedPage> {
               LightColor.orange,
               LightColor.lightOrange2,
               LightColor.darkOrange,
-              Stack(
+              const Stack(
                 children: <Widget>[
                   Align(
                     alignment: Alignment.center,
