@@ -82,9 +82,12 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
             width,
             (x) {
               final pixel = resized.getPixel(x, y);
-              final r = pixel.r / 255.0;
-              final g = pixel.g / 255.0;
-              final b = pixel.b / 255.0;
+              // final r = pixel.r / 255.0;
+              // final g = pixel.g / 255.0;
+              // final b = pixel.b / 255.0;
+              final r = pixel.r.toDouble();
+              final g = pixel.g.toDouble();
+              final b = pixel.b.toDouble();
               return [r, g, b]; // 3 channels
             },
           ),
@@ -98,7 +101,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
       _interpreter.run(input, output);
 
       final labels = ['a2c', 'a3c', 'a4c', 'a5c', 'plax'];
-      final prediction = output[0]; // [0.02, 0.05, 0.09, 0.02, 0.82]
+      final prediction = output[0];
 
       // Find index of max
       int maxIndex = 0;
