@@ -21,7 +21,7 @@ Widget bottomNavigationBar(BuildContext context, Color color, int currentIndex, 
     items: [
       _bottomIcons(Icons.home),
       _bottomIcons(Icons.star_border),
-      _bottomIcons(Icons.add_box_rounded),
+      _bottomIcons(Icons.account_tree_sharp),
     ],
     onTap: onPageIconTapped,
   );

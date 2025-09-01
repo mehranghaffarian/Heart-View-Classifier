@@ -8,10 +8,6 @@ import 'package:hvc_app/src/pages/saved_page.dart';
 import 'package:hvc_app/src/theme/color/light_color.dart';
 import 'package:hvc_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:hvc_app/src/widgets/header.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -41,7 +37,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
         'assets/models/${widget.model.name}.tflite');
   }
 
-  Future<void> _pickAndClassifyImage() async {
+  Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -50,78 +46,82 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
         _image = File(pickedFile.path);
         _predictedLabel = null;
       });
-
-      // Read raw bytes
-      final raw = await File(pickedFile.path).readAsBytes();
-      img.Image? image = img.decodeImage(raw);
-
-      if (image == null) return;
-
-      // ---- STEP 1: Crop like in training (50 top/bottom, 100 left/right) ----
-      final cropped = img.copyCrop(
-        image,
-        x: 100,
-        y: 50,
-        width: image.width - 200,
-        height: image.height - 100,
-      );
-
-      // ---- STEP 2: Resize to model input
-      List<String> parts = widget.model.inputSize.split('x');
-      int width = int.parse(parts[0]);
-      int height = int.parse(parts[1]);
-      final resized = img.copyResize(cropped, width: 224, height: 224);
-
-      // ---- STEP 3: Normalize pixels to [0,1] ----
-      // Prepare input as 4D tensor [1, height, width, 3]
-      var input = List.generate(
-        1,
-        (_) => List.generate(
-          height,
-          (y) => List.generate(
-            width,
-            (x) {
-              final pixel = resized.getPixel(x, y);
-              // final r = pixel.r / 255.0;
-              // final g = pixel.g / 255.0;
-              // final b = pixel.b / 255.0;
-              final r = pixel.r.toDouble();
-              final g = pixel.g.toDouble();
-              final b = pixel.b.toDouble();
-              return [r, g, b]; // 3 channels
-            },
-          ),
-        ),
-      );
-
-      // ---- STEP 4: Prepare output (based on number of classes)
-      var output = List.filled(1 * 5, 0).reshape([1, 5]);
-
-      // ---- STEP 5: Run inference ----
-      _interpreter.run(input, output);
-
-      final labels = ['a2c', 'a3c', 'a4c', 'a5c', 'plax'];
-      final prediction = output[0];
-
-      // Find index of max
-      int maxIndex = 0;
-      double maxValue = prediction[0];
-      for (int i = 1; i < prediction.length; i++) {
-        if (prediction[i] > maxValue) {
-          maxValue = prediction[i];
-          maxIndex = i;
-        }
-      }
-      String predictedClass = labels[maxIndex];
-      double confidence = prediction[maxIndex];
-
-      setState(() {
-        _predictedLabel = predictedClass+prediction.toString();
-      });
+      await Future.delayed(const Duration(seconds: 1));
+      _classifyImage(pickedFile);
     }
   }
 
-  @override
+  Future<void> _classifyImage(XFile pickedFile) async {
+    // Read raw bytes
+    final raw = await File(pickedFile.path).readAsBytes();
+    img.Image? image = img.decodeImage(raw);
+
+    if (image == null) return;
+
+    // ---- STEP 1: Crop like in training (50 top/bottom, 100 left/right) ----
+    final cropped = img.copyCrop(
+      image,
+      x: 100,
+      y: 50,
+      width: image.width - 200,
+      height: image.height - 100,
+    );
+
+    // ---- STEP 2: Resize to model input
+    List<String> parts = widget.model.inputSize.split('x');
+    int width = int.parse(parts[0]);
+    int height = int.parse(parts[1]);
+    final resized = img.copyResize(cropped, width: 224, height: 224);
+
+    // ---- STEP 3: Normalize pixels to [0,1] ----
+    // Prepare input as 4D tensor [1, height, width, 3]
+    var input = List.generate(
+      1,
+          (_) => List.generate(
+        height,
+            (y) => List.generate(
+          width,
+              (x) {
+            final pixel = resized.getPixel(x, y);
+            // final r = pixel.r / 255.0;
+            // final g = pixel.g / 255.0;
+            // final b = pixel.b / 255.0;
+            final r = pixel.r.toDouble();
+            final g = pixel.g.toDouble();
+            final b = pixel.b.toDouble();
+            return [r, g, b]; // 3 channels
+          },
+        ),
+      ),
+    );
+
+    // ---- STEP 4: Prepare output (based on number of classes)
+    var output = List.filled(1 * 5, 0).reshape([1, 5]);
+
+    // ---- STEP 5: Run inference ----
+    _interpreter.run(input, output);
+
+    final labels = ['a2c', 'a3c', 'a4c', 'a5c', 'plax'];
+    final prediction = output[0];
+
+    // Find index of max
+    int maxIndex = 0;
+    double maxValue = prediction[0];
+    for (int i = 1; i < prediction.length; i++) {
+      if (prediction[i] > maxValue) {
+        maxValue = prediction[i];
+        maxIndex = i;
+      }
+    }
+    String predictedClass = labels[maxIndex];
+    double confidence = prediction[maxIndex];
+
+    setState(() {
+      _predictedLabel = predictedClass; // + prediction.toString()
+    });
+  }
+
+    @override
   Widget build(BuildContext context) {
     final model = widget.model;
 
@@ -171,6 +171,14 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                       setState(() {}); // Update UI
                     },
                   ),
+                  Text(
+                    "${model.accuracy}%",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -185,10 +193,15 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                     textAlign: TextAlign.justify,
                     overflow: TextOverflow.visible,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                     ),
                   ),
-                  const Divider(thickness: 1, endIndent: 16, indent: 16),
+                  const Divider(
+                    thickness: 1,
+                    endIndent: 16,
+                    indent: 16,
+                    color: LightColor.darkGreen,
+                  ),
                   const SizedBox(height: 15),
                   _image != null
                       ? Image.file(_image!,
@@ -197,7 +210,7 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                   const SizedBox(height: 20),
                   _image == null
                       ? ElevatedButton(
-                          onPressed: _pickAndClassifyImage,
+                          onPressed: _pickImage,
                           child: const Text(
                             'Pick Image',
                             style: TextStyle(color: LightColor.green),
@@ -209,11 +222,8 @@ class _ModelDetailPageState extends State<ModelDetailPage> {
                               style:
                                   const TextStyle(color: LightColor.darkGreen),
                             )
-                          : ElevatedButton(
-                              onPressed: () {},
-                              child: const Text(
-                                'Classify Image',
-                              ),
+                          : const CircularProgressIndicator(
+                              color: LightColor.lightGreen,
                             ),
                 ],
               ),
